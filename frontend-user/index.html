@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D坦克大战 - 战争雷霆风格</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 加载界面 -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>3D坦克大战</h1>
+            <p class="loading-subtitle">战争雷霆风格</p>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+            <p id="loading-text">正在初始化...</p>
+            <div class="loading-tank">🎮</div>
+        </div>
+    </div>
+
+    <!-- 主菜单 -->
+    <div id="main-menu" class="hidden">
+        <div class="menu-content">
+            <h1>3D坦克大战</h1>
+            <p class="subtitle">战争雷霆风格</p>
+            <div class="menu-buttons">
+                <button id="start-btn" class="menu-btn primary">🎯 开始战斗</button>
+                <button id="settings-btn" class="menu-btn">⚙️ 游戏设置</button>
+            </div>
+            <div class="controls-hint">
+                <h3>操作指南</h3>
+                <div class="controls-grid">
+                    <div class="control-item">
+                        <span class="key-badge">W A S D</span>
+                        <span>移动坦克</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key-badge">鼠标</span>
+                        <span>瞄准方向</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key-badge">左键</span>
+                        <span>发射炮弹</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key-badge">空格</span>
+                        <span>加速移动</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏UI -->
+    <div id="game-ui" class="hidden">
+        <!-- 小地图 -->
+        <div class="minimap" id="minimap">
+            <div class="minimap-header">战术地图</div>
+            <canvas id="minimap-canvas" width="160" height="136"></canvas>
+        </div>
+
+        <!-- 状态面板 -->
+        <div class="stats-panel">
+            <div class="stat-card kills">
+                <div class="stat-icon">💀</div>
+                <div class="stat-info">
+                    <span class="stat-value" id="kill-count">0</span>
+                    <span class="stat-label">击杀数</span>
+                </div>
+            </div>
+            <div class="stat-card time">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-info">
+                    <span class="stat-value" id="game-time">00:00</span>
+                    <span class="stat-label">存活时间</span>
+                </div>
+            </div>
+            <div class="stat-card level">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <span class="stat-value" id="player-level">1</span>
+                    <span class="stat-label">当前等级</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 血量条 -->
+        <div class="health-bar-container">
+            <span class="health-icon">❤️</span>
+            <div class="health-bar" id="health-bar"></div>
+            <span class="health-text" id="health-text">100/100</span>
+        </div>
+
+        <!-- 经验条 -->
+        <div class="exp-bar-container">
+            <div class="exp-bar" id="exp-bar"></div>
+            <span class="exp-text" id="exp-text">等级 1 · 0/100</span>
+        </div>
+
+        <!-- 准星 -->
+        <div class="crosshair" id="crosshair">
+            <div class="crosshair-line top"></div>
+            <div class="crosshair-line bottom"></div>
+            <div class="crosshair-line left"></div>
+            <div class="crosshair-line right"></div>
+            <div class="crosshair-dot"></div>
+        </div>
+
+        <!-- 伤害指示器 -->
+        <div class="damage-indicator" id="damage-indicator"></div>
+
+        <!-- 升级提示 -->
+        <div class="level-up-notification hidden" id="level-up">
+            <h2>🎉 升级</h2>
+            <p id="level-up-text">等级 2</p>
+            <div class="level-up-bonus" id="level-up-bonus"></div>
+        </div>
+
+        <!-- 击杀提示 -->
+        <div class="kill-notification hidden" id="kill-notification">
+            <p>💥 击毁敌方坦克</p>
+            <span class="exp-gain" id="exp-gain">+50 经验值</span>
+        </div>
+
+        <!-- 补给品提示 -->
+        <div class="pickup-notification hidden" id="pickup-notification">
+            <span class="pickup-icon" id="pickup-icon">💊</span>
+            <span class="pickup-text" id="pickup-text">获得补给</span>
+        </div>
+
+        <!-- 暂停菜单 -->
+        <div class="pause-menu hidden" id="pause-menu">
+            <h2>⏸️ 游戏暂停</h2>
+            <button id="resume-btn" class="menu-btn primary">▶️ 继续游戏</button>
+            <button id="quit-btn" class="menu-btn">🏠 返回主菜单</button>
+            <div class="pause-stats">
+                <div class="pause-stat">
+                    <div class="pause-stat-value" id="pause-kills">0</div>
+                    <div class="pause-stat-label">击杀</div>
+                </div>
+                <div class="pause-stat">
+                    <div class="pause-stat-value" id="pause-level">1</div>
+                    <div class="pause-stat-label">等级</div>
+                </div>
+                <div class="pause-stat">
+                    <div class="pause-stat-value" id="pause-time">00:00</div>
+                    <div class="pause-stat-label">时间</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏结束界面 -->
+    <div id="game-over" class="hidden">
+        <div class="game-over-content">
+            <h1>💔 战斗结束</h1>
+            <div class="game-over-stats">
+                <div class="game-over-stat">
+                    <div class="game-over-stat-icon">💀</div>
+                    <div class="game-over-stat-value" id="final-kills">0</div>
+                    <div class="game-over-stat-label">击杀数</div>
+                </div>
+                <div class="game-over-stat">
+                    <div class="game-over-stat-icon">⭐</div>
+                    <div class="game-over-stat-value" id="final-level">1</div>
+                    <div class="game-over-stat-label">最终等级</div>
+                </div>
+                <div class="game-over-stat">
+                    <div class="game-over-stat-icon">⏱️</div>
+                    <div class="game-over-stat-value" id="survival-time">00:00</div>
+                    <div class="game-over-stat-label">存活时间</div>
+                </div>
+            </div>
+            <button id="restart-btn" class="menu-btn primary">🔄 再来一局</button>
+            <button id="menu-btn" class="menu-btn">🏠 返回主菜单</button>
+        </div>
+    </div>
+
+    <!-- 设置面板 -->
+    <div id="settings-panel" class="hidden">
+        <div class="settings-content">
+            <h2>⚙️ 游戏设置</h2>
+            <div class="setting-item">
+                <label>
+                    <span>🔊 音效音量</span>
+                    <span class="setting-value" id="sfx-value">70%</span>
+                </label>
+                <input type="range" id="sfx-volume" min="0" max="100" value="70">
+            </div>
+            <div class="setting-item">
+                <label>
+                    <span>🎵 音乐音量</span>
+                    <span class="setting-value" id="music-value">50%</span>
+                </label>
+                <input type="range" id="music-volume" min="0" max="100" value="50">
+            </div>
+            <div class="setting-item">
+                <label>
+                    <span>🎯 鼠标灵敏度</span>
+                    <span class="setting-value" id="sensitivity-value">5</span>
+                </label>
+                <input type="range" id="mouse-sensitivity" min="1" max="10" value="5">
+            </div>
+            <div class="setting-item">
+                <label>画质设置</label>
+                <select id="graphics-quality">
+                    <option value="low">低画质 - 流畅优先</option>
+                    <option value="medium" selected>中画质 - 均衡模式</option>
+                    <option value="high">高画质 - 画面优先</option>
+                </select>
+            </div>
+            <button id="settings-close" class="menu-btn primary">✓ 保存设置</button>
+        </div>
+    </div>
+
+    <!-- 自定义弹窗 -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal confirm" id="modal">
+            <div class="modal-header">
+                <div class="modal-header-icon" id="modal-icon">❓</div>
+                <h3 class="modal-title" id="modal-title">确认操作</h3>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="modal-message">确定要执行此操作吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" id="modal-cancel">取消</button>
+                <button class="modal-btn confirm" id="modal-confirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- 游戏容器 -->
+    <div id="game-container"></div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- 游戏脚本 -->
+    <script src="js/audio.js"></script>
+    <script src="js/terrain.js"></script>
+    <script src="js/bullet.js"></script>
+    <script src="js/tank.js"></script>
+    <script src="js/enemy.js"></script>
+    <script src="js/upgrade.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
