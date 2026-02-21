@@ -28,25 +28,14 @@ class TerrainManager {
      * 创建地面
      */
     createGround() {
-        // 地面几何体
-        const groundGeometry = new THREE.PlaneGeometry(this.mapSize, this.mapSize, 50, 50);
-        
-        // 添加地形起伏
-        const vertices = groundGeometry.attributes.position.array;
-        for (let i = 0; i < vertices.length; i += 3) {
-            const x = vertices[i];
-            const y = vertices[i + 1];
-            // 轻微的地形起伏
-            vertices[i + 2] = Math.sin(x * 0.05) * Math.cos(y * 0.05) * 1.5;
-        }
-        groundGeometry.computeVertexNormals();
+        // 地面几何体 - 平坦地面，不添加起伏
+        const groundGeometry = new THREE.PlaneGeometry(this.mapSize, this.mapSize, 1, 1);
         
         // 地面材质 - 沙漠/泥土色
         const groundMaterial = new THREE.MeshStandardMaterial({
             color: 0x8B7355,
             roughness: 0.9,
-            metalness: 0.1,
-            flatShading: true
+            metalness: 0.1
         });
         
         const ground = new THREE.Mesh(groundGeometry, groundMaterial);
@@ -55,10 +44,6 @@ class TerrainManager {
         ground.name = 'ground';
         
         this.scene.add(ground);
-        
-        // 添加网格辅助线（调试用，可注释）
-        // const gridHelper = new THREE.GridHelper(this.mapSize, 40, 0x444444, 0x222222);
-        // this.scene.add(gridHelper);
     }
 
     /**
@@ -361,8 +346,8 @@ class TerrainManager {
             new THREE.Vector3(position.x + radius, 5, position.z + radius)
         );
         
-        // 检查边界
-        const halfSize = this.mapSize / 2 - 5;
+        // 检查边界 - 留出足够空间给坦克
+        const halfSize = this.mapSize / 2 - 10;
         if (Math.abs(position.x) > halfSize || Math.abs(position.z) > halfSize) {
             return false;
         }
