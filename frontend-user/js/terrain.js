@@ -346,8 +346,8 @@ class TerrainManager {
             new THREE.Vector3(position.x + radius, 5, position.z + radius)
         );
         
-        // 检查边界 - 留出足够空间给坦克
-        const halfSize = this.mapSize / 2 - 10;
+        // 检查边界 - 边界墙在 mapSize/2 位置，留3单位给坦克宽度
+        const halfSize = this.mapSize / 2 - 3;
         if (Math.abs(position.x) > halfSize || Math.abs(position.z) > halfSize) {
             return false;
         }
