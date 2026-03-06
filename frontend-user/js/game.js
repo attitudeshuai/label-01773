@@ -25,6 +25,7 @@ class Game {
         this.keys = {};
         this.mouse = { x: 0, y: 0 };
         this.isPointerLocked = false;
+        this.turretTargetAngle = 0;
         
         this.cameraOffset = new THREE.Vector3(0, 15, -20);
         this.cameraLookOffset = new THREE.Vector3(0, 0, 10);
@@ -166,6 +167,8 @@ class Game {
         
         this.gameTime = 0;
         this.kills = 0;
+        this.turretTargetAngle = 0;
+        this.mouse = { x: 0, y: 0 };
         
         this.ui.updateHealth(100, 100);
         this.ui.updateExp(1, 0, 100);
@@ -256,8 +259,7 @@ class Game {
         }
         
         if (this.isPointerLocked) {
-            const targetAngle = tank.mesh.rotation.y + this.mouse.x * 0.5;
-            tank.rotateTurret(targetAngle, this.deltaTime);
+            tank.rotateTurret(this.turretTargetAngle, this.deltaTime);
         }
     }
 
@@ -377,7 +379,7 @@ class Game {
 
     onMouseMove(e) {
         if (this.isPointerLocked) {
-            this.mouse.x += e.movementX * this.settings.mouseSensitivity;
+            this.turretTargetAngle -= e.movementX * this.settings.mouseSensitivity;
             this.mouse.y += e.movementY * this.settings.mouseSensitivity;
             this.mouse.y = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, this.mouse.y));
         }
