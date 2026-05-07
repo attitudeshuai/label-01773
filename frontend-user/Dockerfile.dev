@@ -1,0 +1,9 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN npm install -g browser-sync --registry=https://registry.npmmirror.com
+
+EXPOSE 3000 3001
+
+CMD ["browser-sync", "start", "--server", ".", "--files", "**/*.html, **/*.css, **/*.js", "--port", "3000", "--ui-port", "3001", "--no-notify", "--watch"]
