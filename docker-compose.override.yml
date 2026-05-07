@@ -1,0 +1,15 @@
+services:
+  frontend-user:
+    build:
+      context: ./frontend-user
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8082:3000"
+      - "3002:3001"
+    container_name: tank-game-frontend-dev
+    restart: "no"
+    volumes:
+      - ./frontend-user:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development

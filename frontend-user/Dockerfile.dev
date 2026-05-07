@@ -1,0 +1,11 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN npm init -y && npm install browser-sync
+
+COPY . .
+
+EXPOSE 3000 3001
+
+CMD ["npx", "browser-sync", "start", "--server", ".", "--files", "**/*.html, **/*.css, **/*.js", "--port", "3000", "--ui-port", "3001", "--no-notify", "--watch"]
